@@ -8,6 +8,17 @@ case $1 in
             sed -i "s/BrowserApplication=firefox-esr.desktop/BrowserApplication=chromium-browser.desktop/" \
                 /usr/share/desktop-base/kf5-settings/kdeglobals
         fi
+
+        # Bucase allwinner's GPU driver not support OpenGL,
+        # so we set QSG_RHI_BACKEND=vulkan, to avoid QT rendering failure.
+        if [ ! -e /etc/security ]
+        then
+            mkdir -p /etc/security
+        fi
+        if [ -e /etc/security/pam_env.conf ] && ! grep -e 'QSG_RHI_BACKEND' /etc/security/pam_env.conf >/dev/null 2>/dev/null
+        then
+            echo 'QSG_RHI_BACKEND DEFAULT=vulkan' >> /etc/security/pam_env.conf
+        fi
         ;;
 esac
     
